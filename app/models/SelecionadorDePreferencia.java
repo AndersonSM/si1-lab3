@@ -14,7 +14,7 @@ public abstract class SelecionadorDePreferencia {
 	@GeneratedValue
 	private Long id;
 	@Column
-	protected boolean indicacaoEspecial = false;
+	protected boolean indicacaoEspecial = true;
 	
 	@OneToOne(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
 	private Serie serie;
