@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 @Entity(name="Episodio")
-public class Episodio {
+public class Episodio implements Comparable<Episodio>{
 	@Id
 	@GeneratedValue
 	private Long id;
@@ -59,4 +59,9 @@ public class Episodio {
 		this.assistido = assistido;
 		temporada.checarSeAssistida();
 	}
+	@Override
+	public int compareTo(Episodio ep) {
+		return numero - ep.getNumero();
+	}
+	
 }

@@ -11,9 +11,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 
 @Entity(name="Temporada")
-public class Temporada {
+public class Temporada implements Comparable<Temporada>{
 	@Id
 	@GeneratedValue
 	private Long id;
@@ -23,6 +24,7 @@ public class Temporada {
 	Serie serie;
 	@OneToMany(cascade=CascadeType.ALL)
 	@JoinColumn(name="EPI")
+	@OrderBy("numero")
 	List<Episodio> episodios;
 	/*-1: nenhum episodio assistido 
 	 * 0: ao menos um episodio assistido, mas nao todos
@@ -85,5 +87,10 @@ public class Temporada {
 			setAssistida(0);
 		else
 			setAssistida(-1);
+	}
+
+	@Override
+	public int compareTo(Temporada temp) {
+		return numero - temp.getNumero();
 	}
 }

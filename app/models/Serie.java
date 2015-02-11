@@ -11,6 +11,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
 
 @Entity(name="Serie")
 public class Serie {
@@ -21,12 +23,18 @@ public class Serie {
 	private String nome;
 	@OneToMany(cascade=CascadeType.ALL)
 	@JoinColumn(name="TEMP")
+	@OrderBy("numero")
 	private List<Temporada> temporadas;
 	@Column
 	private boolean acompanhando;
+
+	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	@JoinColumn(name="SELECAO_ID")
+	private SelecionadorDePreferencia selecionador;
 	
 	public Serie(){
-		this.temporadas = new ArrayList<Temporada>(); 
+		this.temporadas = new ArrayList<Temporada>();
+		this.selecionador = new SelecionadorMaisAntigo();
 	}
 	
 	public Serie(String nome){
@@ -72,27 +80,24 @@ public class Serie {
 	
 	//pega o proximo episodio nao assistido imediatamente depois do ultimo assistido
 	public Episodio getProximoEpisodio() {
-		for (int i = this.getTemporadasTotal(); i > 0; i--) {
-			List<Episodio> temp = this.getTemporadas().get(i-1).getEpisodios();
-			for (int j = temp.size(); j >0; j--) {
-				//o primeiro episodio achado, de tras para frente
-				if (temp.get(j-1).isAssistido()){
-					//se ultimo episodio a que assisti foi o ultimo de uma temporada
-					if (j==temp.size()){
-						//se for o ultimo episodio da ultima temporada
-						if (i==this.getTemporadasTotal()){
-							return new Episodio("Último episódio da serie já assistido", new Temporada(0, this), 0);
-						}else{
-							//pegue o primeiro da outra temporada
-							return this.getTemporadas().get(i).getEpisodios().get(0);
-						}
-					}else{
-						//pegue o proximo episodio da temporada
-						return temp.get(j);
-					}
-				}
-			}			
+		return selecionador.getProximoEpisodio(this);
+	}
+	
+	public List<Episodio> getTodosEpisodios(){
+		List<Episodio> result = new ArrayList<Episodio>();
+		for (Temporada temporada : temporadas) {
+			for (Episodio episodio : temporada.getEpisodios()) {
+				result.add(episodio);
+			}
 		}
-		return new Episodio("Nenhum episodio assistido", new Temporada(0, this), 0);
+		return result;
+	}
+
+	public SelecionadorDePreferencia getSelecionador() {
+		return selecionador;
+	}
+
+	public void setSelecionador(SelecionadorDePreferencia selecionador) {
+		this.selecionador = selecionador;
 	}
 }

@@ -4,7 +4,6 @@ import java.util.List;
 
 import models.Episodio;
 import models.Serie;
-import models.Temporada;
 import models.dao.GenericDAO;
 import play.Logger;
 import play.data.Form;
