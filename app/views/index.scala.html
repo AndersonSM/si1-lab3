@@ -9,10 +9,16 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!-- Bootstrap CSS -->
 		<link href="@routes.Assets.at("stylesheets/bootstrap.css")" rel="stylesheet" media="screen">        
+		<link href="@routes.Assets.at("stylesheets/foundation.css")" rel="stylesheet" media="screen">        
  		<script src="@routes.Assets.at("javascripts/jquery-1.9.0.min.js")" rel="javascript" media="screen"></script>
  		<script src="@routes.Assets.at("javascripts/jquery-extra.js")" rel="javascript" media="screen"></script>
+ 		<script src="@routes.Assets.at("javascripts/vendor/modernizr.js")" rel="javascript" media="screen"></script>
+ 		<script src="@routes.Assets.at("javascripts/vendor/fastclick.js")" rel="javascript" media="screen"></script>
+ 		<script src="@routes.Assets.at("javascripts/foundation/foundation.js")" rel="javascript" media="screen"></script>
+ 		<script src="@routes.Assets.at("javascripts/foundation.min.js")" rel="javascript" media="screen"></script>
     </head>
     <body>
+    	<span class="ui-icon-gear"></span>
     	<div class="container"><br>
     		<div class="jumbotron">
     			<h1 >Sistema de acompanhamento de seriados</h1>
@@ -55,11 +61,15 @@
     				<div class="list-group">
 		    			<h1 class="list-group-item active" style="font-size: xx-large;">Acompanhando</h1>		    			
 		    			@for(serie <- series){
-		    				
-		    				@if(serie.isAcompanhada()){		    							    					
+		    				@if(serie.isAcompanhada()){
+			    				<div id="myModal@serie.getId()" class="reveal-modal" data-reveal>
+								  <p class="lead">@serie.getNome()</p>
+								  <a class="close-reveal-modal">&#215;</a>
+								</div>		    							    					
 		    						<li style="font-style: oblique;" class="list-group-item list-group-item-danger">Próximo episódio a assistir: @serie.getProximoEpisodio().getNome()</li>
 			    				<div id="showHide" class="panel-heading span5 episodio">
 			    					<p class="unselectable">@serie.getNome()</p>
+			    				<a href="#" data-reveal-id="myModal@serie.getId()"><h6>Preferências</h6></a>
 			    				</div>
 			    				<ul class="lista list-group episodio">
 			    					@for(temporada <- serie.getTemporadas()){
@@ -96,5 +106,8 @@
     			</div> 	
     			</div>	
     	</div>
+    	<script>
+	    	$(document).foundation();
+		</script>
    	</body>
 </html>

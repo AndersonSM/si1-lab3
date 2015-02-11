@@ -34,7 +34,7 @@ public class Serie {
 	
 	public Serie(){
 		this.temporadas = new ArrayList<Temporada>();
-		this.selecionador = new SelecionadorMaisAntigo();
+		this.selecionador = new SelecionadorMaisAtual();
 	}
 	
 	public Serie(String nome){

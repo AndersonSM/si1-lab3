@@ -11,7 +11,8 @@ public class SelecionadorMaisAntigo extends SelecionadorDePreferencia{
 	
 	@Override
 	public Episodio getProximoEpisodio(Serie serie){
-		Episodio proxEpisodio = new Episodio("Nenhum episódio a ser recomendado nesta série.", null, 0);
+		Episodio nenhumEp = new Episodio("Nenhum episódio a ser recomendado nesta série.", null, 0);
+		Episodio proxEpisodio = nenhumEp;
 		//boolean serieTerminada = true;
 
 		/*for (int i = 0; i < serie.getTemporadasTotal(); i++) {
@@ -29,25 +30,44 @@ public class SelecionadorMaisAntigo extends SelecionadorDePreferencia{
 			Logger.info("Entrou");
 			proxEpisodio = verificaTresProximos(serie, proxEpisodio.getTemporada().getNumero()-1, proxEpisodio.getNumero());
 		}*/
-		List<Episodio> lista = serie.getTodosEpisodios();
+		
+		/*List<Episodio> lista = serie.getTodosEpisodios();
 		
 		if(indicacaoEspecial)
-			return verificaTresProximos(lista);
+			return verificaTresProximos(lista);*/
 		
-		for (Episodio ep : lista) {
+		/*for (Episodio ep : lista) {
 			if(!ep.isAssistido()){
 				proxEpisodio = ep;
 				break;
 			}
+		}*/
+		
+		boolean achou = false;
+		for (Temporada temp : serie.getTemporadas()) {
+			for (Episodio ep : temp.getEpisodios()) {
+				if(!ep.isAssistido()){
+					achou = true;
+					proxEpisodio = ep;
+					break;
+				}
+			}
+			if(achou) break;
+		}
+		
+		if(achou && indicacaoEspecial){
+			Episodio next = verificaTresProximos(serie.getTodosEpisodios(), proxEpisodio);
+			if(next!=null) proxEpisodio = next;
+			else proxEpisodio = nenhumEp;
 		}
 		
 		return proxEpisodio;
 	}
 	
-	private Episodio verificaTresProximos(List<Episodio> lista){
-		Episodio proximoEpisodio = null;
-		boolean flag = true;
-		
+	private Episodio verificaTresProximos(List<Episodio> lista, Episodio ep){
+		Episodio proximoEpisodio = ep;
+		/*
+		boolean flag = false;
 		for (int i = 0; i < lista.size(); i++) {
 			if(!lista.get(i).isAssistido()){
 				proximoEpisodio = lista.get(i);
@@ -60,7 +80,17 @@ public class SelecionadorMaisAntigo extends SelecionadorDePreferencia{
 				if(!flag) break;
 			}
 		}
-		return proximoEpisodio;
+		return proximoEpisodio;*/
+		int assistidos = 0;
+		for (int i = 0; i < lista.size(); i++) {
+			if(lista.get(i).compareTo(ep) >= 1 && lista.get(i).isAssistido()){
+				assistidos++;
+			}
+			if(assistidos == 3){
+				return null;
+			}
+		}
+		
+		return proximoEpisodio; 
 	}
-	
 }
