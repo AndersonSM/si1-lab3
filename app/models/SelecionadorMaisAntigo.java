@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.persistence.Entity;
 
+import play.Logger;
+
 @Entity(name="SelecionadorMaisAntigo")
 public class SelecionadorMaisAntigo extends SelecionadorDePreferencia{
 	
@@ -66,8 +68,8 @@ public class SelecionadorMaisAntigo extends SelecionadorDePreferencia{
 	
 	private Episodio verificaTresProximos(List<Episodio> lista, Episodio ep){
 		Episodio proximoEpisodio = ep;
-		/*
 		boolean flag = false;
+		/*
 		for (int i = 0; i < lista.size(); i++) {
 			if(!lista.get(i).isAssistido()){
 				proximoEpisodio = lista.get(i);
@@ -83,12 +85,28 @@ public class SelecionadorMaisAntigo extends SelecionadorDePreferencia{
 		return proximoEpisodio;*/
 		int assistidos = 0;
 		for (int i = 0; i < lista.size(); i++) {
-			if(lista.get(i).compareTo(ep) >= 1 && lista.get(i).isAssistido()){
-				assistidos++;
+			if(lista.get(i).compareTo(ep) >= 0 && !lista.get(i).isAssistido()){
+				for (int j = i+1; j < lista.size(); j++) {
+					if(lista.get(j).isAssistido()){
+						assistidos++;
+					}
+					if(assistidos == 3){
+						if(j+1<lista.size()){
+							proximoEpisodio = lista.get(j+1);
+							i = j+1;
+							flag = true;
+						}else{
+							return null;
+						}
+						break;
+					}
+				}
 			}
-			if(assistidos == 3){
-				return null;
+			if(!flag){
+				break;
 			}
+			flag = false;
+			assistidos = 0;
 		}
 		
 		return proximoEpisodio; 

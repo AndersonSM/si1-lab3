@@ -63,7 +63,7 @@ public class Episodio implements Comparable<Episodio>{
 	public int compareTo(Episodio ep) {
 		if(this.temporada.compareTo(ep.getTemporada())>=1)
 			return 1;
-		else if(this.temporada.compareTo(ep.getTemporada())<=1)
+		else if(this.temporada.compareTo(ep.getTemporada())<=-1)
 			return -1;
 		return numero - ep.getNumero();
 	}
